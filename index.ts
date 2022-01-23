@@ -1,9 +1,10 @@
 import express from 'express';
+import path from 'path';
+import './config/db';
 
 const app = express();
-
-app.get('/', (req, res) => {
-    res.send('Well done!');
+app.get('/', (req: any, res: any) => {
+    res.send(path.join(__dirname, '/..'));
 })
 
 app.listen(3000, () => {
