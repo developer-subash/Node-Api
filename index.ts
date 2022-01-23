@@ -4,7 +4,7 @@ import './config/db';
 
 const app = express();
 app.get('/', (req: any, res: any) => {
-    res.send(path.join(__dirname, '/..'));
+    res.send('Welcome to Nodejs Page');
 })
 
 app.listen(3000, () => {
