@@ -19,8 +19,9 @@ class RoleController {
         res: Response,
         next: NextFunction
     ) => {
-       const data = roleServiceInstance.fetchAll();
-       res.send(data);
+    //    const data = roleServiceInstance.fetchAll();
+    //    res.send(data);
+    console.log("hello");
     }
 
     createRole = (
@@ -49,3 +50,4 @@ class RoleController {
 }
 
  const roleControllerInstance = new RoleController();
+ export default roleControllerInstance;

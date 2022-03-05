@@ -1,3 +1,4 @@
+// This is just a code but grou of routing is handle from index.ts other file
 
 import express , {Request, Response }  from 'express';
 import { SendResponse } from "../utils/sendResponse";
