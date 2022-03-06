@@ -1,7 +1,8 @@
 // import  {jwt} from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { Role } from './../interfaces/Role';
 import roleServiceInstance from './../services/role.service';
+import { IRole } from './../models/role.model';
+import { SendResponse } from './../utils/sendResponse';
 
 class RoleController {
     constructor() {
@@ -19,9 +20,9 @@ class RoleController {
         res: Response,
         next: NextFunction
     ) => {
-    //    const data = roleServiceInstance.fetchAll();
-    //    res.send(data);
-    console.log("hello");
+      roleServiceInstance.fetchAll((error, result) => {
+
+      });
     }
 
     createRole = (
@@ -29,7 +30,13 @@ class RoleController {
         res: Response,
         next: NextFunction
     ) => {
-
+        var role : IRole= <IRole>req.body; 
+        roleServiceInstance.create(role, (error, result) => {
+            if (error)
+               SendResponse.sendErrorResponse(res,501,'Something went wrong');
+            else
+                SendResponse.sendSuccessResponse(res, 201, result, 'Role Created successFully');
+        });
     }
 
     deleteRoll = (

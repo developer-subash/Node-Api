@@ -3,7 +3,7 @@ import path from 'path';
 import './config/db';
 
 const UserRouter =  require ('./src/routes/user.route');
-const RoleRouter =  require ('./src/routes/user.route');
+const RoleRouter =  require ('./src/routes/role.route');
 const app = express();
 
 app.get('/', (req: any, res: any) => {
@@ -16,6 +16,10 @@ app.listen(3000, () => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+/**
+ * Grouping Route
+ */
 
 const routePrefix = '/api/v1/';
 app.use(`${routePrefix}user`, UserRouter);

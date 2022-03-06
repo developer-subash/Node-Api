@@ -1,5 +1,5 @@
 import { User } from './User';
-export interface Role {
+export interface IRole {
     title: string;
     createdBy?: User;
     createdAt?: Date;
