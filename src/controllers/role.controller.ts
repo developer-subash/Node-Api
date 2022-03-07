@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import roleServiceInstance from './../services/role.service';
 import { IRole } from './../models/role.model';
 import { SendResponse } from './../utils/sendResponse';
+import { Constants } from '../utils/constants';
 
 class RoleController {
     constructor() {
@@ -33,9 +34,9 @@ class RoleController {
         var role : IRole= <IRole>req.body; 
         roleServiceInstance.create(role, (error, result) => {
             if (error)
-               SendResponse.sendErrorResponse(res,501,'Something went wrong');
+               SendResponse.sendErrorResponse(res,Constants.STATUSLIST.HTTP_INTERNAL_ERROR,'Something went wrong');
             else
-                SendResponse.sendSuccessResponse(res, 201, result, 'Role Created successFully');
+               SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, result, 'Role Created successFully');
         });
     }
 
