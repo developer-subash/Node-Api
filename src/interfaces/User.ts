@@ -1,4 +1,4 @@
-import { Role } from './Role';
+import { IRole } from './Role';
 
 export interface User {
     firstName: string;
@@ -7,5 +7,5 @@ export interface User {
     email?: string;
     gender: string;
     dateOfBirth: Date;
-    role: Role;
+    role: IRole;
 }

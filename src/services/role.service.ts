@@ -25,6 +25,14 @@ class RoleService {
             throw new Error("error in your request");
         }
     }
+
+    async delete(id: string, callback: (error: any, result: any) => void) {
+        try {
+            this._roleRepository.delete(id,callback);
+        } catch (error) {
+            throw new Error("error in your request");
+        }
+    }
 }
 
 const roleServiceInstance = new RoleService();

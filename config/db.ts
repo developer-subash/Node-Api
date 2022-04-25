@@ -1,7 +1,7 @@
 import  mongoose  from "mongoose";
 import { ConnectionOptions } from "tls";
-
-mongoose.connect('mongodb://localhost:27017/nodeTest', {
+const mongoURI: string = "mongodb+srv://subash:Subash$123@cluster0.btxtj.mongodb.net/lunch_db?retryWrites=true&w=majority";
+mongoose.connect(mongoURI, {
     useNewUrlParser: true
 } as ConnectionOptions,
 (err: any) => {

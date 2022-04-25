@@ -12,11 +12,16 @@ export namespace Constants {
         HTTP_UNAUTHORIZED_ERROR: 401,
         HTTP_VALIDATION_ERROR: 403,
         HTTP_CREATED: 201,
+        HTTP_SUCCESS: 200,
         HTTP_BAD_REQUEST: 400,
         METHOD_NOT_ALLOWED: 405,
         TOO_MANY_REQUESTS: 429,
         NETWORK_AUTHENTICATION_REQUIRED: 511,
     } as const;
+
+    export const StandardMessage = {
+        ServerError: 'Something went wrong',
+    }
 
 }
 

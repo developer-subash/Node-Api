@@ -4,7 +4,9 @@ import roleServiceInstance from './../services/role.service';
 import { IRole } from './../models/role.model';
 import { SendResponse } from './../utils/sendResponse';
 import { Constants } from '../utils/constants';
-
+import {  RoleValidationSchema } from '../schemas/role.schema';
+// import RoleValidationSchema from '../schemas/role.schema';
+const Joi = require('joi'); 
 class RoleController {
     constructor() {
     }
@@ -18,11 +20,13 @@ class RoleController {
     */
     fetchAll = (
         req: Request,
-        res: Response,
-        next: NextFunction
+        res: Response
     ) => {
       roleServiceInstance.fetchAll((error, result) => {
-
+          if (error)
+              SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, 'Something went wrong');
+          else
+              SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, result, 'Roles Fetched successFully');
       });
     }
 
@@ -31,29 +35,48 @@ class RoleController {
         res: Response,
         next: NextFunction
     ) => {
-        var role : IRole= <IRole>req.body; 
-        roleServiceInstance.create(role, (error, result) => {
+        var role : IRole= <IRole>req.body;
+
+        // check validation 
+        const validationErrors = SendResponse.checkValidation(RoleValidationSchema, role);
+
+        if (!!validationErrors) {
+            SendResponse.sendValidationError(res, validationErrors);
+            return;
+        }
+
+        roleServiceInstance.create(role, (error: any, result: any) => {
             if (error)
-               SendResponse.sendErrorResponse(res,Constants.STATUSLIST.HTTP_INTERNAL_ERROR,'Something went wrong');
+                SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, 'Something went wrong');
             else
-               SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, result, 'Role Created successFully');
+                SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, result, 'Roles Created successFully');
         });
     }
 
-    deleteRoll = (
+    deleteRole = (
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
-
+       try {
+        const roleId: string = req.params.roleId;
+        roleServiceInstance.delete(roleId, (error, result) => {
+            if (error)
+                SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, error);
+            else
+              SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, result, 'Role Deleted successFully');
+         })
+       } catch (error) {
+         SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
+       }
     }
 
-    updateRoll = (
+    updateRole = (
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
-
+        
     }
 }
 
