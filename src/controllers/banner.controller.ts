@@ -3,14 +3,16 @@ import { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import { IBanner } from '../models/banner.model';
 import { BannerValidationSchema } from '../schemas/banner.schema';
-import bannerServiceInstance from '../services/banner.service';
+import { BannerService } from '../services/banner.service';
 import { Constants } from '../utils/constants';
 import { SendResponse } from '../utils/sendResponse';
 const fs = require('fs');
 const cloudinary = require('../utils/cloudinary');
 
 class BannerController {
+    private readonly _bannerServiceInstance;
     constructor() {
+        this._bannerServiceInstance = new BannerService();
     }
 
     /**
@@ -20,19 +22,13 @@ class BannerController {
      * @param {express.NextFunction} next 
      * @returns { Banner } Array of Banner
     */
-    fetchAll = (
+     fetchAll = async (
         req: Request,
         res: Response,
-        next: NextFunction
     ) => {
         try {
-            
-            bannerServiceInstance.fetchAll((error: Error, result: any) => {
-                if (error)
-                    SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
-                else
-                    SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, result, 'Banner Fetched successFully');
-            })
+            const data =  await this._bannerServiceInstance.fetchAll();
+            SendResponse.sendSuccessResponse(res, 200, data);
         } catch (error) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }
@@ -55,7 +51,6 @@ class BannerController {
             const validationErrors = SendResponse.checkValidation(BannerValidationSchema, item);
             if (!!validationErrors) {
                 SendResponse.sendValidationError(res, validationErrors);
-                return;
             }
 
             //After pass validation continue from here 
@@ -67,15 +62,9 @@ class BannerController {
             const base64Data = imgData.replace(/^data:([A-Za-z-+/]+);base64,/, '');
 
             // implement logic to save data on collections
-            bannerServiceInstance.create(item, (error, result) => {
-                console.log(error);
-                if (error)
-                    SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
-                else {
-                    fs.writeFileSync(ImgPath, base64Data, { encoding: 'base64' });
-                    SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, result, 'Banner Created successFully');
-                }
-            });
+            const data = this._bannerServiceInstance.create(item);
+            fs.writeFileSync(ImgPath, base64Data, { encoding: 'base64' });
+            SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'Banner Created successFully');
         } catch (e: any) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }

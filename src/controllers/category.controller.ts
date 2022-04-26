@@ -1,12 +1,17 @@
 // import  {jwt} from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { SendResponse } from '../utils/sendResponse';
-import categoryServiceInstance from '../services/category.service';
+import { CategoryService } from '../services/category.service';
 import { ICategory } from './../models/category.model';
 import { Constants } from '../utils/constants';
 import { CategoryValidationSchema } from '../schemas/category.schema';
 
 class CategoryController {
+
+    private readonly _categoryServiceInstance;
+    constructor() {
+         this._categoryServiceInstance = new CategoryService()   
+    }
 
     /**
      * @description responsiable to fetch all users list
@@ -20,16 +25,11 @@ class CategoryController {
         res: Response,
         next: NextFunction
     ) => {
-        categoryServiceInstance.fetchAll((error, result) => {
-            if (error)
-                SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, 'Something went wrong');
-            else
-                SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, result, 'Category Fetched successFully');
-        });
+        const data = this._categoryServiceInstance.fetchAll(); 
 
     }
 
-    createCategory = (
+    createCategory = async (
         req: Request,
         res: Response,
         next: NextFunction
@@ -40,17 +40,11 @@ class CategoryController {
             const validationErrors = SendResponse.checkValidation(CategoryValidationSchema, categoryItem);
             if (!!validationErrors) {
                 SendResponse.sendValidationError(res, validationErrors);
-                return;
             }
 
             // After validation pass further process to save category to DB
-
-            categoryServiceInstance.create(categoryItem, (error, result) => {
-                if (error)
-                    SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, 'Something went wrong');
-                else
-                    SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, result, 'Category Created successFully');
-            })
+            const data = await this._categoryServiceInstance.create(categoryItem);
+            SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, data, 'Category Created successFully');
 
         } catch (error: any) {
             res.status(500).send(error.message);
@@ -62,12 +56,8 @@ class CategoryController {
         res: Response
     ) => {
         const categoryId: string = req.params.catId;
-        categoryServiceInstance.delete(categoryId, (error, result) => {
-            if (error)
-                SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, error);
-            else
-                SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, result, 'Category Deleted successFully');
-        });
+        const data = this._categoryServiceInstance.delete(categoryId);
+        SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'Category Deleted successFully');
     }
 
     updateCategory = (

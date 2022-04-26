@@ -1,6 +1,7 @@
+import mongoose from 'mongoose';
 import Category, { ICategory } from '../models/category.model';
 import { CategoryRepository } from './../repositories/Category/CategoryRepository';
-class CategoryService {
+export class CategoryService {
     private _categoryRepository;
 
     constructor() {
@@ -8,19 +9,17 @@ class CategoryService {
     }
 
 
-    create(item: ICategory, callback: (error: any, result: any) => void) {
-        this._categoryRepository.create(item, callback);
+    async create(item: ICategory): Promise<mongoose.Document<ICategory>> {
+        const data = await this._categoryRepository.create(item);
+        return data;
     }
 
-    fetchAll(callback:(error:any, result:any) => void) {
-        this._categoryRepository.retrieve(callback);
+    fetchAll() {
+        this._categoryRepository.retrieve();
     }
 
-    delete(id: string, callback:(error:any, result:any) => void) {
-        this._categoryRepository.delete(id,callback);
+    delete(id: string) {
+        this._categoryRepository.delete(id);
     }
 
 }
-
-const categoryServiceInstance = new CategoryService();
-export default categoryServiceInstance;

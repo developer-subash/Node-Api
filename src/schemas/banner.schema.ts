@@ -16,7 +16,7 @@ import mongoose from "mongoose";
    },
    imageUrl: {
       type: String,
-      required: true
+      required: true,
    },
    price: {
       type: Number,
@@ -36,6 +36,12 @@ import mongoose from "mongoose";
 
 }, { timestamps: true }
 );
+/** This function basically update collections schema key */
+BannerSchema.path('imageUrl').get( (val: string) => {
+   return  `assets/banner/images/${val}`;
+});
+
+BannerSchema.set('toJSON', { getters: true, virtuals: false });
 
 const BannerValidationSchema = Joi.object({
 

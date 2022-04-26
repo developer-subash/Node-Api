@@ -11,17 +11,13 @@ export class BannerRepository<T extends mongoose.Document> implements IRead<T>, 
     this._model = schemaModel;
 }
 
-create(item: IBanner, callback: any): void {
-    this._model.create(item, callback);
+async create(item: IBanner): Promise< any|IBanner> {
+    const data = await this._model.create(item);
+    return data;
 }
 
-retrieve(callback: (error: any, result: mongoose.Document[]) => void) {
-    this._model.find({})
-    .populate('categories', `_id title`).
-    exec(function (err, result) {
-        if (err) return err;
-        callback(null, result);
-      });
+async retrieve():Promise<Array<IBanner>> {
+   return  this._model.find({}).populate('categories', `_id title`);
 }
 
 update(_id: mongoose.Types.ObjectId, item: T, callback: (error: any, result: any) => void) {

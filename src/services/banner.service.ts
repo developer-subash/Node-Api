@@ -1,6 +1,6 @@
 import Banner, { IBanner } from '../models/banner.model';
 import { BannerRepository } from '../repositories/Banner/BannerRepository';
-class BannerService {
+export class BannerService {
     private _bannerRepository;
 
     constructor() {
@@ -8,12 +8,14 @@ class BannerService {
     }
 
 
-    create(item: IBanner, callback: (error: any, result: any) => void) {
-        this._bannerRepository.create(item, callback);
+    create(item: IBanner) {
+        this._bannerRepository.create(item);
     }
 
-    fetchAll(callback:(error:any, result:any) => void) {
-        this._bannerRepository.retrieve(callback);
+   async fetchAll():Promise<Array<IBanner>> {
+        const data = await this._bannerRepository.retrieve();
+        // other works
+        return data;
     }
 
     delete(id: string, callback:(error:any, result:any) => void) {
@@ -21,6 +23,3 @@ class BannerService {
     }
 
 }
-
-const bannerServiceInstance = new BannerService();
-export default bannerServiceInstance;

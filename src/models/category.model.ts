@@ -7,6 +7,7 @@ import { CategorySchema } from '../schemas/category.schema';
  * @param updatedAt:Date
  */
 export interface ICategory extends Document {
+    // _id: mongoose.Types.ObjectId;
     title: string;
     createdAt: Date;
     updatedAt: Date;

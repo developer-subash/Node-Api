@@ -1,6 +1,7 @@
 import  IWrite  = require('./interfaces/IWrite');
 import  IRead = require('./interfaces/IRead');
 import mongoose = require("mongoose");
+import { ICategory } from '../../models/category.model';
 
 export class CategoryRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T> {
 
@@ -10,30 +11,28 @@ export class CategoryRepository<T extends mongoose.Document> implements IRead<T>
     this._model = schemaModel;
 }
 
-create(item: T, callback: any): void {
-    this._model.create(item, callback);
-
+async create(item: ICategory): Promise<mongoose.Document<ICategory>> {
+  const data = await this._model.create(item);
+  return data;
 }
 
-retrieve(callback: (error: any, result: mongoose.Document[]) => void) {
-    this._model.find({}, callback);
+async retrieve(): Promise<Array<mongoose.Document<ICategory>>> {
+    const data= await this._model.find({});
+    return data;
 }
 
 update(_id: mongoose.Types.ObjectId, item: T, callback: (error: any, result: any) => void) {
     this._model.updateOne({ _id: _id }, item, callback);
 }
 
-delete(_id:string, callback: (error: any, result: any) => void) {
-    this.findById(_id, (error, result) => {
-        if(result) 
-         this._model.deleteOne({ _id: _id }, (err) => callback(err, null));
-        else 
-        callback(`Selected Document is N't Available In Collection`,null);
-    });
+delete(_id:string) {
+    const singleData =  this.findById(_id);
+        // if(!!singleData) 
+       
 }
 
-findById(_id: string, callback: (error: T, result: T) => void) {
-    this._model.findById(_id, callback);
+findById(_id: string): Promise<ICategory> {
+    return this._model.find({_id}) as any;
 }
 
 
