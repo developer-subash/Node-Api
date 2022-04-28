@@ -14,12 +14,12 @@ export class CategoryService {
         return data;
     }
 
-    fetchAll() {
-        this._categoryRepository.retrieve();
+    async fetchAll() : Promise<Array<mongoose.Document<ICategory>>> {
+        return await this._categoryRepository.retrieve();
     }
 
-    delete(id: string) {
-        this._categoryRepository.delete(id);
+    async delete(id: string) {
+       return await this._categoryRepository.delete(id);
     }
 
 }

@@ -20,13 +20,13 @@ class CategoryController {
      * @param {express.NextFunction} next 
      * @returns { User } Array of User
     */
-    fetchAll = (
+    fetchAll = async (
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
-        const data = this._categoryServiceInstance.fetchAll(); 
-
+        const data = await this._categoryServiceInstance.fetchAll(); 
+        SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, data, 'Category Fetched successFully');
     }
 
     createCategory = async (
