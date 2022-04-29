@@ -1,6 +1,6 @@
 import { User } from './User';
 import { ICategory } from './Category';
-export interface IBanner {
+export interface IBanner extends Document  {
     uri: string;
     title: string;
     imageUrl: string;

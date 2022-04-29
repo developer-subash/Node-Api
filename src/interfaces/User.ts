@@ -9,3 +9,7 @@ export interface User {
     dateOfBirth: Date;
     role: IRole;
 }
+
+export interface IValidation {
+    [index: string]: string
+}

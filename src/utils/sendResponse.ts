@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
+import { IValidation } from '../interfaces/User';
 // import CategoryValidationSchema from '../schemas/category.schema';
 export namespace SendResponse {
 
@@ -23,8 +24,8 @@ export namespace SendResponse {
      * @returns 
      */
 
-    export const checkValidation = (validationSchema:any,postData: any , message:string = 'please fill all field') => {
-        const validationErrors: any = {};
+    export const checkValidation = (validationSchema:any,postData: any , message:string = 'please fill all field'):  IValidation => {
+        const validationErrors: IValidation = {};
         // schema options
         const options = {
             abortEarly: false, // include all errors
@@ -33,13 +34,11 @@ export namespace SendResponse {
         };
 
         // validate request body against schema
-        const { error, value } = validationSchema.validate(postData,options);
-        if (error) {
+        const { error } = validationSchema.validate(postData,options);
+        if (error) 
             error.details.filter((x:any) => validationErrors[x?.context?.key] = x.message)
-            return validationErrors;
-        } else {
-            return;
-        }
+            
+        return validationErrors;
     }
 
     export const validateRequest = (req: Request, next: NextFunction, schema: any) => {

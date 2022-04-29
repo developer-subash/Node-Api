@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { IRole } from '../models/role.model';
+import { UserSchema } from '../schemas/user.schema';
 
 /**
  * Interface to model the Role Schema for TypeScript.
@@ -17,39 +18,10 @@ import { IRole } from '../models/role.model';
     lastName: string;
     email: string;
     gender: string;
-    role: IRole["_id"];
+    // role: IRole["_id"];
   }
 
-const userSchema = new Schema({
-    firstName: { 
-        type: String, 
-        required: true
-     },
-    middleName: { 
-        type: String, 
-        required: true
-    },
-    lastName: { 
-        type: String, 
-        required: true
-    },
-    email: { 
-        type: String, 
-        required: true, unique: true 
-    },
-    gender: { 
-        type: String, 
-        enum: ['MALE', 'FEMALE', 'OTHERS'], 
-        default: 'MALE' 
-    },
-    Role: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        required: true, ref: ''
-    }
-}, { timestamps: true }
-);
-
 // const User: Model<IUser> = model("User", userSchema);
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', UserSchema);
 
 export default User;

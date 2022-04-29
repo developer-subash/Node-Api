@@ -1,10 +1,16 @@
 // import  {jwt} from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import * as UserService from '../services/user.service';
-import { User } from './../interfaces/User';
-import userServiceInstance from './../services/user.service';
+import { IUser } from '../models/user.model';
+import { UserValidationSchema } from '../schemas/user.schema';
+import { UserService } from '../services/user.service';
+import { SendResponse } from '../utils/sendResponse';
 
 class UserController {
+
+    private readonly _userServiceInstance;
+    constructor() {
+        this._userServiceInstance = new UserService()
+    }
 
     /**
      * @description responsiable to fetch all users list
@@ -22,12 +28,19 @@ class UserController {
         res.send("hello from fetch user");
     }
 
-    createUser = (
+    createUser = async (
         req: Request,
-        res: Response,
-        next: NextFunction
+        res: Response
     ) => {
-        
+        const item: IUser = req.body;
+
+        /** check Validation message  */
+        const validationErrors = SendResponse.checkValidation(UserValidationSchema, item);
+            if (!!validationErrors) {
+                SendResponse.sendValidationError(res, validationErrors);
+            }
+
+        const data = await this._userServiceInstance.create(item);
     }
 
     deleteUser = (
