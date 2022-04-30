@@ -12,7 +12,7 @@ export class UserRepository<T extends mongoose.Document> implements IRead<T>, IW
 }
 
 async create(item: IUser): Promise<mongoose.Document<IUser>> {
-   return await  this._model.create(item);
+   return await this._model.create(item);
 }
 
 retrieve() {

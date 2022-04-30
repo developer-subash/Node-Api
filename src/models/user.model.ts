@@ -18,6 +18,7 @@ import { UserSchema } from '../schemas/user.schema';
     lastName: string;
     email: string;
     gender: string;
+    password: string
     // role: IRole["_id"];
   }
 

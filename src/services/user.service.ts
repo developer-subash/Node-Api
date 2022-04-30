@@ -17,7 +17,6 @@ export class UserService {
     }
 
     create = async (item: IUser) : Promise<mongoose.Document<IUser>> => {
-        const data =  this._userRepository.create(item);
-        return data;
+        return  await this._userRepository.create(item);
     }
 } 

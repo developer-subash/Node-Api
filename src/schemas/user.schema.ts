@@ -7,8 +7,7 @@ import { Schema } from 'mongoose';
         required: true,
     },
     middleName: {
-        type: String,
-        required: true,
+        type: String
     },
     lastName: {
         type: String,
@@ -33,50 +32,44 @@ import { Schema } from 'mongoose';
   ); 
 
   let strongPasswordRegex  = /^(?!.*\s)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).{10,16}$/;
-    const UserValidationSchema = Joi.object({
+  const UserValidationSchema = Joi.object({
+    firstName: Joi.any().required().messages({
+        "string.empty": `firstName cannot be an empty field`,
+        "any.required": `firstName is a required.`,
 
-        firstName: Joi.any().required().messages({
-            "string.empty": `firstName cannot be an empty field`,
-            "any.required": `firstName is a required.`,
-        }),
+    }),
+    middleName: Joi.any(),
+    lastName: Joi.any().required().messages({
+        "string.empty": `lastName cannot be an empty field`,
+        "any.required": `lastName is a required.`,
+    }),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'de', 'org'] } })
+    .required().messages({
+        "string.empty": `Email cannot be an empty field`,
+        "any.required": `Email is a required.`,
+        "string.email": "Email must be email type"
+    }),
+ 
+    password: Joi.string().min(7).required().regex(strongPasswordRegex).strict().messages({
+        'string.pattern.base': `Password must be strong. At least one upper case alphabet. At least one lower case alphabet. At least one digit. At least one special character. Minimum ten in length`,
+        'string.empty': `Password Cannot Be Empty`,
+        'string.required': `Password Cannot Be Empty`,
+    }),
 
-        middleName: Joi.any().required().messages({
-            "string.empty": `middleName cannot be an empty field`,
-            "any.required": `middleName is a required.`,
-        }),
 
-        lastName: Joi.any().required().messages({
-            "string.empty": `lastName cannot be an empty field`,
-            "any.required": `lastName is a required.`,
-        }),
+    confirmPassword : Joi.string().valid(Joi.ref('password')).required().messages({
+        'any.required': `Confirm Password is required`,
+        'string.empty': `Confirm Password Cannot Be Empty`,
+        'any.only': `Confirm Password Must Same as Password`
+    }),
 
-        email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'de', 'org'] } })
-        .required().messages({
-            "string.empty": `Email cannot be an empty field`,
-            "any.required": `Email is a required.`,
-            "string.email": "Email must be email type"
-        }),
-    
-        password: Joi.string().min(7).required().regex(strongPasswordRegex).strict().messages({
-            'string.pattern.base': `Password must be strong. At least one upper case alphabet. At least one lower case alphabet. At least one digit. At least one special character. Minimum eight in length`,
-            'string.empty': `Password Cannot Be Empty`,
-            'string.required': `Password Cannot Be Empty`,
-        }),
-
-    
-        confirmPassword : Joi.any().valid(Joi.ref('password')).required().messages({
-            'any.required': `Confirm Password is required`,
-            'any.empty': `Confirm Password Cannot Be Empty`,
-            'any.only': `Confirm Password Must be Same as Password`
-        }),
-
-        gender: Joi.string().valid('MALE', 'FEMALE','OTHER').uppercase().required().messages({
-            'any.required': `Geneder is required`,
-            'string.empty': `Geneder cannot be empty`,
-            'any.only': `Gender must be one of [MALE, FEMALE, OTHER]`
-        })
-    
-    });
+    gender: Joi.string().valid('MALE', 'FEMALE','OTHER').uppercase().required().messages({
+        'any.required': `Geneder is required`,
+        'string.empty': `Geneder cannot be empty`,
+        'any.only': `Gender must be one of [MALE, FEMALE, OTHER]`
+    })
+   
+});
 
 export {
     UserValidationSchema,
