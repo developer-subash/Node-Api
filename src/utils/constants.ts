@@ -19,8 +19,15 @@ export namespace Constants {
         NETWORK_AUTHENTICATION_REQUIRED: 511,
     } as const;
 
+    export const Keys = {
+        TOKEN_SECRET : '09f26e402586e2faa8da4c98a35f1b20d6b033c60',
+        REFRESH_TOKEN_SECRET : '09f26e402586e2faa8da4c98a35f1b20d6b088df90',
+    }
+
     export const StandardMessage = {
-        ServerError: 'Something went wrong',
+        ServerError: 'Oops... something went wrong please try again later',
+        PasswordNotMatchError: `Entered Password Was N't Correct`,
+        EmailNotMatchError: `Entered Email Was N't Correct`,
     }
 
 }

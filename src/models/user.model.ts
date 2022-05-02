@@ -18,11 +18,13 @@ import { UserSchema } from '../schemas/user.schema';
     lastName: string;
     email: string;
     gender: string;
-    password: string
+    password: string;
+    token?:string;
+    accessToken?:string;
     // role: IRole["_id"];
   }
 
 // const User: Model<IUser> = model("User", userSchema);
-const User = mongoose.model('User', UserSchema);
+const User: mongoose.Model<mongoose.Document<IUser>>  = mongoose.model('User', UserSchema);
 
 export default User;
