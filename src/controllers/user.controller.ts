@@ -5,17 +5,16 @@ import { UserValidationSchema } from '../schemas/user.schema';
 import { UserService } from '../services/user.service';
 import { UtilsService } from '../services/utils.service';
 import { SendResponse } from '../utils/sendResponse';
-import  brcypt  from 'bcrypt';
+import brcypt from 'bcrypt';
 import { Constants } from '../utils/constants';
 import { ILogin, LoginValidationSchema } from '../interfaces/User';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import mongoose from 'mongoose';
-import  jwt, { JwtPayload }  from 'jsonwebtoken';
-
 class UserController {
 
     private readonly _userServiceInstance;
     private readonly _utilityServiceInstance;
-    private refreshTokens : Array<string> = [];
+    private refreshTokens: Array<string> = [];
     constructor() {
         this._userServiceInstance = new UserService()
         this._utilityServiceInstance = new UtilsService();
@@ -49,7 +48,7 @@ class UserController {
         res: Response
     ) => {
         try {
-            const item: IUser = (req.body);
+            const item: IUser = req.body;
             /** check Validation message  */
             const validationErrors = SendResponse.checkValidation(UserValidationSchema, item);
             if (!this._utilityServiceInstance.isEmpty(validationErrors)) {
@@ -58,13 +57,20 @@ class UserController {
             }
             const salt = await brcypt.genSalt(10);
             item.password = await brcypt.hash(item.password, salt);
-            const data = await this._userServiceInstance.create(item);
-            SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'User Created successFully');
-
+            await this._userServiceInstance.create(item)
+                .then(async data => {
+                    const { email, firstName, middleName, lastName } = item;
+                    const text = `Hello ${firstName} ${middleName} ${lastName},${Constants.StandardMessage.UserCreateedEmailDesc}`;
+                    /** Send Email notofication after user Registered SuccessFully */
+                    await this._utilityServiceInstance.sendEmail(email, Constants.StandardMessage.EmailNotificationLabel, text);
+                    SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'User Created successFully');
+                })
+                .catch(error => {
+                    SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
+                });
         } catch (error) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }
-
     }
 
     /**
@@ -96,7 +102,7 @@ class UserController {
         } catch (error) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }
-    } 
+    }
 
     deleteUser = (
         req: Request,
@@ -121,13 +127,16 @@ class UserController {
      * @returns 
      */
 
-    public generateAccessToken = async (req: Request, res: Response) : Promise<void>=> {
+    public generateAccessToken = async (req: Request, res: Response): Promise<void> => {
         try {
             const refreshToken = req.body.token;
             let data: string | JwtPayload['user'];
-            let accessToken;
-            if (!refreshToken || !this.refreshTokens.includes(refreshToken)) {
+            let accessToken: string = '';
+            if (!refreshToken) {
                 SendResponse.sendErrorResponse(res, 403, Constants.StandardMessage.ServerError, 'Refresh Token is not Provided in request');
+                return;
+            } else if (refreshToken && !this.refreshTokens.includes(refreshToken)) {
+                SendResponse.sendErrorResponse(res, 403, Constants.StandardMessage.ServerError, 'Refresh Token Not a valid One');
                 return;
             } else {
                 data = jwt.verify(refreshToken, Constants.Keys.REFRESH_TOKEN_SECRET);
@@ -139,7 +148,30 @@ class UserController {
             SendResponse.sendErrorResponse(res, 403, Constants.StandardMessage.ServerError, 'Refresh Token Validity Is Expired, Please Login To get Refresh Token');
         }
     }
+    /**
+     * This function handles For Request to forget password
+     * @param req 
+     * @param res 
+     */
+
+    public requestForgetPassword = async(req: Request, res: Response) => {
+        try {
+
+            const { email } = req.body;
+            
+           let userInfo: any| Array<mongoose.Document<IUser>> = this._userServiceInstance.usersHavingSameEmail(email);
+
+           if(!userInfo.length) {
+            SendResponse.sendErrorResponse(res, 403, Constants.StandardMessage.EmailNotMatchError);
+            return ;
+           }
+
+           userInfo = this._userServiceInstance.requestForgetPassword(email);
+        } catch (error) {
+            SendResponse.sendErrorResponse(res, 403, Constants.StandardMessage.ServerError, 'Refresh Token Validity Is Expired, Please Login To get Refresh Token');
+        }
+    }
 }
 
- const userControllerInstance = new UserController();
- export default userControllerInstance;
+const userControllerInstance = new UserController();
+export default userControllerInstance;

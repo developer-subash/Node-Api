@@ -1,16 +1,11 @@
 import Joi, { number, string } from "joi";
-import { join } from "path";
-import { ICategory } from "../models/category.model";
+import path, { join } from "path";
 import { Schema } from 'mongoose';
-import { CategorySchema } from "./category.schema";
 import mongoose from "mongoose";
+import { request } from "express";
 
- const BannerSchema = new Schema({
+ const FoodItemSchema = new Schema({
    title: {
-       type: String,
-       required: true
-   },
-   uri: {
        type: String,
        required: true
    },
@@ -37,25 +32,20 @@ import mongoose from "mongoose";
 }, { timestamps: true }
 );
 /** This function basically update collections schema key */
-BannerSchema.path('imageUrl').get( (val: string) => {
-   return  `assets/banner/images/${val}`;
+FoodItemSchema.path('imageUrl').get( (val: string) => {
+//  console.log(request.headers.host,request.headers.origin);
+   return  path.basename('assets/banner/images/')+val;
 });
 
-BannerSchema.set('toJSON', { getters: true, virtuals: false });
+FoodItemSchema.set('toJSON', { getters: true, virtuals: false });
 
-const BannerValidationSchema = Joi.object({
+const FoodItemValidationSchema = Joi.object({
 
    title: Joi.string().min(3).required().messages({
       "string.empty": `Title cannot be an empty field`,
       "any.required": `Title is a required.`,
       "string.base": `Title should be a type of text`,
       "string.min": `Title should be a not less than 3 string`,
-   }),
-
-   uri: Joi.string().required().messages({
-      "any.required": `Uri is a required.`,
-      "string.empty": `Uri cannot be an empty field`,
-      "string.base": `Uri should be a type of text`
    }),
 
    imageUrl: Joi.string().required().messages({
@@ -86,6 +76,6 @@ const BannerValidationSchema = Joi.object({
 });
 
 export {
-   BannerValidationSchema,
-   BannerSchema
+   FoodItemValidationSchema,
+   FoodItemSchema
 };

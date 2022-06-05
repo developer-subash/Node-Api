@@ -30,5 +30,18 @@ export class UtilsService {
        return await brcypt.genSalt(10);
     }
 
+    public sendEmail = (email: string, emailsubjectLabel: string, emailText: string,) => {
+        const message = {
+            from: process.env.EMAIL_ADDRESS,
+            to: email,
+            subject: emailsubjectLabel,
+            text: emailText
+        }
+
+        return message;
+    }
+
+
+
 
 }

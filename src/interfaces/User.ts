@@ -18,8 +18,8 @@ export interface ILogin {
 }
 export interface LoginResponse {
     user: IUser,
-    token: string,
     accessToken: string,
+    refreshToken: string,
 }
 
 export const LoginValidationSchema = Joi.object({

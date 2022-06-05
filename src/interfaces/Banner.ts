@@ -1,7 +1,7 @@
 import { User } from './User';
 import { ICategory } from './Category';
-export interface IBanner extends Document  {
-    uri: string;
+import mongoose from 'mongoose';
+export interface IFoodItem extends Document  {
     title: string;
     imageUrl: string;
     price: number;
@@ -10,4 +10,19 @@ export interface IBanner extends Document  {
     // createdBy?: User;
     createdAt?: Date;
     updatedAt?: Date;
+}
+
+export interface IFoodItemResponse {
+    nextPage?: number,
+    prevPage?: number,
+    data?: Array<mongoose.Document<any | IFoodItem>>,
+    perPage?: number,
+    currentPage?: number,
+    totalPages?: number,
+    totalElements?: number,
+}
+
+export interface PaginationUrlParams{
+        page: number;
+        limit: number;
 }

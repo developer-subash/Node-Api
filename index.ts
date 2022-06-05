@@ -4,12 +4,13 @@ const dotenv = require('dotenv');
 
 const UserRouter =  require ('./src/routes/user.route');
 const RoleRouter =  require ('./src/routes/role.route');
-const BannerRouter =  require ('./src/routes/banner.route');
+const FoodItemRouter =  require ('./src/routes/foodItem.route');
 const categoryRouter =  require ('./src/routes/category.route');
 const swaggerDocument = require('./src/utils/swagger.json');
 import './config/db';
 // import {swaggerDocs}  from './src/utils/swagger';
 import  swaggerUi  from 'swagger-ui-express';
+import transporter from './src/config/email';
 const app = express();
 
 dotenv.config();
@@ -42,5 +43,5 @@ app.use(
 const routePrefix = '/api/v1/';
 app.use(`${routePrefix}user`, UserRouter);
 app.use(`${routePrefix}role`, RoleRouter);
-app.use(`${routePrefix}banner`, BannerRouter);
+app.use(`${routePrefix}foodItem`, FoodItemRouter);
 app.use(`${routePrefix}category`, categoryRouter);

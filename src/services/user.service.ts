@@ -31,9 +31,9 @@ export class UserService {
             return Promise.reject(Constants.StandardMessage.EmailNotMatchError);
         const match = await brcypt.compare(item.password, user[0].password);
         const token = await this.generateAccessToken(user[0]);
-        const accessToken = await this.generateRefreshToken(user[0]);
+        const refreshToken = await this.generateRefreshToken(user[0]);
         if (match)
-            return Promise.resolve({user: user[0], token: token, accessToken: accessToken});
+            return Promise.resolve({user: user[0], accessToken: token, refreshToken: refreshToken});
         else
             return Promise.reject(Constants.StandardMessage.PasswordNotMatchError);
     }
@@ -41,7 +41,7 @@ export class UserService {
     public generateAccessToken = async (user: IUser): Promise<string> => {
         return (
             "Bearer " +
-            Jwt.sign({ user }, Constants.Keys.TOKEN_SECRET, { expiresIn: "20s" })
+            Jwt.sign({ user }, Constants.Keys.TOKEN_SECRET, { expiresIn: "1d" })
           );
     }
 
@@ -52,5 +52,9 @@ export class UserService {
     public usersHavingSameEmail = async (email: string) : Promise<any | Array<mongoose.Document<IUser>>>=> {
         const users = await this._userRepository.findByEmail(email);
         return users;
+    }
+
+    public requestForgetPassword = async (email: string) => {
+        const users = await this._userRepository.findByEmail(email); 
     }
 } 

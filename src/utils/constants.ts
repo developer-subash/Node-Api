@@ -24,10 +24,15 @@ export namespace Constants {
         REFRESH_TOKEN_SECRET : '09f26e402586e2faa8da4c98a35f1b20d6b088df90',
     }
 
+
     export const StandardMessage = {
         ServerError: 'Oops... something went wrong please try again later',
         PasswordNotMatchError: `Entered Password Was N't Correct`,
         EmailNotMatchError: `Entered Email Was N't Correct`,
+        EmailNotificationLabel: `Email Notifications For User Created`,
+        UserCreateedEmailDesc: `Your New Account Is Created,  Now You Able To Login To System`,
+        RequestForgetPasswordDesc: `,  Now You Able To Login To System`,
+        
     }
 
 }

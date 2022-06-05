@@ -10,7 +10,7 @@ export namespace SendResponse {
         data: e?.toString()
     });
     
-    export const sendSuccessResponse = (res: Response, code: number = 200, data: any, message:string = 'Successfully'): Response => res.status(code).send({
+    export const sendSuccessResponse = (res: Response, code: number = 200, data: any, message:string = 'Successfully') => res.status(code).send({
         status: 'success',
         data,
         message

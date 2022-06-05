@@ -19,8 +19,8 @@ import { UserSchema } from '../schemas/user.schema';
     email: string;
     gender: string;
     password: string;
-    token?:string;
     accessToken?:string;
+    refreshToken?:string;
     // role: IRole["_id"];
   }
 

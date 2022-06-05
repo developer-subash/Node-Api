@@ -5,12 +5,15 @@ import { CategoryService } from '../services/category.service';
 import { ICategory } from './../models/category.model';
 import { Constants } from '../utils/constants';
 import { CategoryValidationSchema } from '../schemas/category.schema';
+import { UtilsService } from './../services/utils.service';
 
 class CategoryController {
 
     private readonly _categoryServiceInstance;
+    private readonly _utililsServiceInstance;
     constructor() {
-         this._categoryServiceInstance = new CategoryService()   
+         this._categoryServiceInstance = new CategoryService();  
+         this._utililsServiceInstance = new UtilsService();
     }
 
     /**
@@ -38,8 +41,9 @@ class CategoryController {
             // First need to check validations Error and if error found throw msg
             const categoryItem: ICategory = req.body;
             const validationErrors = SendResponse.checkValidation(CategoryValidationSchema, categoryItem);
-            if (!!validationErrors) {
+            if (!this._utililsServiceInstance.isEmpty(validationErrors)) {
                 SendResponse.sendValidationError(res, validationErrors);
+                return;
             }
 
             // After validation pass further process to save category to DB
