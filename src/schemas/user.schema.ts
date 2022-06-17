@@ -26,6 +26,10 @@ const UserSchema = new Schema({
     gender: {
         type: String,
         required: true,
+    },
+    lastLoginDate: {
+        type: Date,
+        default: new Date()
     }
 }, { timestamps: true }
 );

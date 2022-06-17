@@ -93,7 +93,9 @@ class UserController {
             // implement logic for login
             await this._userServiceInstance.login(item)
                 .then(data => {
+                    const { user } = data;
                     this.refreshTokens.push(data.accessToken);
+                    this._userServiceInstance.updateLastLoginDate(user._id);
                     SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'User Logged In successFully')
                 })
                 .catch(Error => {
@@ -144,29 +146,6 @@ class UserController {
                     accessToken = await this._userServiceInstance.generateAccessToken(data['user']);
                 SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, { accessToken }, 'Access Token Genereted Successfully');
             }
-        } catch (error) {
-            SendResponse.sendErrorResponse(res, 403, Constants.StandardMessage.ServerError, 'Refresh Token Validity Is Expired, Please Login To get Refresh Token');
-        }
-    }
-    /**
-     * This function handles For Request to forget password
-     * @param req 
-     * @param res 
-     */
-
-    public requestForgetPassword = async(req: Request, res: Response) => {
-        try {
-
-            const { email } = req.body;
-            
-           let userInfo: any| Array<mongoose.Document<IUser>> = this._userServiceInstance.usersHavingSameEmail(email);
-
-           if(!userInfo.length) {
-            SendResponse.sendErrorResponse(res, 403, Constants.StandardMessage.EmailNotMatchError);
-            return ;
-           }
-
-           userInfo = this._userServiceInstance.requestForgetPassword(email);
         } catch (error) {
             SendResponse.sendErrorResponse(res, 403, Constants.StandardMessage.ServerError, 'Refresh Token Validity Is Expired, Please Login To get Refresh Token');
         }

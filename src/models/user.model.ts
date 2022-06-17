@@ -11,6 +11,7 @@ import { UserSchema } from '../schemas/user.schema';
  * @param email:string
  * @param gender:string
  * @param Role: string
+ * @param  lastLoginDate: Date,
  */
  export interface IUser extends Document {
     firstName: string;
@@ -19,6 +20,7 @@ import { UserSchema } from '../schemas/user.schema';
     email: string;
     gender: string;
     password: string;
+    lastLoginDate: Date,
     accessToken?:string;
     refreshToken?:string;
     // role: IRole["_id"];

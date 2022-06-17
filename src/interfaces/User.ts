@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import mongoose from 'mongoose';
 import { IUser } from '../models/user.model';
 import { IRole } from './Role';
 
@@ -20,6 +21,12 @@ export interface LoginResponse {
     user: IUser,
     accessToken: string,
     refreshToken: string,
+}
+export interface forgetPasswordRequestInterface {
+    token: Number,
+    valid: boolean,
+    user: mongoose.Types.ObjectId,
+    lastlogindate: Date,
 }
 
 export const LoginValidationSchema = Joi.object({

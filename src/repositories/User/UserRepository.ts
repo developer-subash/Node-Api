@@ -3,6 +3,7 @@ import  IRead = require('./interfaces/IRead');
 import mongoose = require("mongoose");
 import { IUser } from '../../models/user.model';
 import { ILogin } from '../../interfaces/User';
+import  brcypt  from 'bcrypt';
 
 export class UserRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T> {
 
@@ -21,8 +22,20 @@ async retrieve(): Promise<Array<mongoose.Document<IUser>>>{
     return data;
 }
 
-update(_id: mongoose.Types.ObjectId, item: T) {
-   return this._model.update({ _id: _id }, item);
+async update(_id: mongoose.Types.ObjectId, item: T) {
+   return await this._model.updateOne({ _id: _id }, item);
+}
+/**
+ * Handle last login date in user Model
+ * @param _id 
+ * @returns 
+ */
+
+async updateLastLoginDate(_id: mongoose.Types.ObjectId) {
+    return await this._model.updateOne(
+        { _id: _id },
+        { $set: { "lastLoginDate": new Date() } }
+    );
 }
 
 delete(_id: string) {
@@ -35,13 +48,33 @@ findById(_id: string) {
 }
 
 async findByEmail(email: string): Promise<Array<mongoose.Document<IUser>>> {
-   const data = await this._model.find({ email: email })
+   const data = await this._model.find({ email: email });
     return data;
 }
 
 login(item: ILogin) {
     
 }
+
+/**
+ * responsiable for update hashed password after forgetpassword
+ * @param userId 
+ * @param password 
+ */
+updatePasswordAction = async (
+    _id: mongoose.Types.ObjectId,
+    password: string
+) : Promise<void> => {
+    const salt = await brcypt.genSalt(10);
+    const hashPassword = await brcypt.hash(password, salt);
+      console.log("hashPassword", hashPassword, _id);
+    const test = await this._model.updateOne(
+        { _id },
+        { $set: {password: hashPassword} },
+        { multi: true }
+    )
+    console.log("test", test);
+} 
 
 
 private toObjectId(_id: string):mongoose.Schema.Types.ObjectId {

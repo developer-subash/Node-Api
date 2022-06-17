@@ -26,14 +26,14 @@ export class UserService {
     login = async (item: ILogin): Promise< LoginResponse> => {
 
         // before login we need to convert brcypt password into plain, 
-        const user = await this.usersHavingSameEmail(item.email);
-        if (!user.length)
+        const user = await this.usersHavingSameEmail(item.email).then(res => res[0]);
+        if (!user)
             return Promise.reject(Constants.StandardMessage.EmailNotMatchError);
-        const match = await brcypt.compare(item.password, user[0].password);
-        const token = await this.generateAccessToken(user[0]);
-        const refreshToken = await this.generateRefreshToken(user[0]);
+        const match = await brcypt.compare(item.password, user.password);
+        const token = await this.generateAccessToken(user);
+        const refreshToken = await this.generateRefreshToken(user);
         if (match)
-            return Promise.resolve({user: user[0], accessToken: token, refreshToken: refreshToken});
+            return Promise.resolve({user: user, accessToken: token, refreshToken: refreshToken});
         else
             return Promise.reject(Constants.StandardMessage.PasswordNotMatchError);
     }
@@ -54,7 +54,19 @@ export class UserService {
         return users;
     }
 
-    public requestForgetPassword = async (email: string) => {
-        const users = await this._userRepository.findByEmail(email); 
+    public requestForgetPassword = async (userRequestForgetPassword: mongoose.Document<IUser>) => {
+        // const users = await this._userRepository.requestForgetPassword(userRequestForgetPassword); 
+    }
+
+    public updateLastLoginDate = async (userId: mongoose.Types.ObjectId) => {
+     return await this._userRepository.updateLastLoginDate(userId);
+    }
+
+    /**
+     * Resposiable to handle , update collection value to valid: false and token will be empty 
+       before new request added
+     */
+       updatePassword = async (userId: mongoose.Types.ObjectId, password: string): Promise<void> => {
+        await this._userRepository.updatePasswordAction(userId, password);
     }
 } 
