@@ -21,8 +21,8 @@ async retrieve(): Promise<Array<mongoose.Document<IUser>>>{
     const data = await this._model.find({});
     return data;
 }
-
-async update(_id: mongoose.Types.ObjectId, item: T) {
+// mongoose.Types.ObjectId
+async update<T, K extends keyof T>(_id: K, item: T) {
    return await this._model.updateOne({ _id: _id }, item);
 }
 /**
@@ -38,12 +38,12 @@ async updateLastLoginDate(_id: mongoose.Types.ObjectId) {
     );
 }
 
-delete(_id: string) {
+delete(_id: mongoose.Types.ObjectId) {
     // this.find(_id);
     
 }
 
-findById(_id: string) {
+findById(_id: mongoose.Types.ObjectId) {
     this._model.findById(_id);
 }
 
@@ -67,13 +67,11 @@ updatePasswordAction = async (
 ) : Promise<void> => {
     const salt = await brcypt.genSalt(10);
     const hashPassword = await brcypt.hash(password, salt);
-      console.log("hashPassword", hashPassword, _id);
     const test = await this._model.updateOne(
         { _id },
         { $set: {password: hashPassword} },
         { multi: true }
     )
-    console.log("test", test);
 } 
 
 
