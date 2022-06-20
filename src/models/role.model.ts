@@ -8,7 +8,7 @@ import { RoleSchema } from '../schemas/role.schema';
  * @param updatedAt:Date
  */
 export interface IRole extends Document {
-    title: string;
+    title: String;
     createdAt: Date;
     updatedAt: Date;
 }

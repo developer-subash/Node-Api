@@ -1,6 +1,8 @@
+import mongoose from "mongoose";
+
 interface Read<T> {
-  retrieve: (callback: (error: any, result: any)=> void)=> void;
-  findById: (id: string, callback: (error:any, result: T) => void) => void;    
+  retrieve: ()=> void;
+  findById: (id: mongoose.Types.ObjectId ) => void;
 } 
 
 export = Read;

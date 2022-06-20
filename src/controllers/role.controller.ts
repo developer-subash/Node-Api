@@ -1,14 +1,22 @@
 // import  {jwt} from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import roleServiceInstance from './../services/role.service';
 import { IRole } from './../models/role.model';
 import { SendResponse } from './../utils/sendResponse';
 import { Constants } from '../utils/constants';
 import {  RoleValidationSchema } from '../schemas/role.schema';
 // import RoleValidationSchema from '../schemas/role.schema';
+import { RoleService } from './../services/role.service';
+import { UtilsService } from '../services/utils.service';
+import mongoose from 'mongoose';
 const Joi = require('joi'); 
 class RoleController {
+
+    private readonly _roleServiceInstance;
+    private readonly _utilityServiceInstance;
+
     constructor() {
+        this._roleServiceInstance =  new RoleService()
+        this._utilityServiceInstance = new UtilsService();
     }
 
     /**
@@ -18,54 +26,43 @@ class RoleController {
      * @param {express.NextFunction} next 
      * @returns { User } Array of User
     */
-    fetchAll = (
+    fetchAll = async (
         req: Request,
         res: Response
     ) => {
-      roleServiceInstance.fetchAll((error, result) => {
-          if (error)
-              SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, 'Something went wrong');
-          else
-              SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, result, 'Roles Fetched successFully');
-      });
-    }
 
-    createRole = (
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) => {
-        var role : IRole= <IRole>req.body;
-
-        // check validation 
-        const validationErrors = SendResponse.checkValidation(RoleValidationSchema, role);
-
-        if (!!validationErrors) {
-            SendResponse.sendValidationError(res, validationErrors);
-            return;
+        try {
+          const roleList =  await this._roleServiceInstance.fetchAll();  
+        } catch (error) {
+            SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }
-
-        roleServiceInstance.create(role, (error: any, result: any) => {
-            if (error)
-                SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, 'Something went wrong');
-            else
-                SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, result, 'Roles Created successFully');
-        });
     }
 
-    deleteRole = (
+    createRole = async (
         req: Request,
-        res: Response,
-        next: NextFunction
+        res: Response
+    ) => {
+        try {
+            const role: IRole = <IRole>req.body;
+            // check validation 
+            const validationErrors = SendResponse.checkValidation(RoleValidationSchema, role);
+            if (!!validationErrors) {
+                SendResponse.sendValidationError(res, validationErrors);
+                return;
+            }
+            await this._roleServiceInstance.create(role);
+        } catch (error) {
+            SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
+        }
+    }
+
+    deleteRole = async (
+        req: Request,
+        res: Response
     ) => {
        try {
         const roleId: string = req.params.roleId;
-        roleServiceInstance.delete(roleId, (error, result) => {
-            if (error)
-                SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, error);
-            else
-              SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, result, 'Role Deleted successFully');
-         })
+        const role = await this._roleServiceInstance.delete(roleId);
        } catch (error) {
          SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
        }
@@ -73,8 +70,7 @@ class RoleController {
 
     updateRole = (
         req: Request,
-        res: Response,
-        next: NextFunction
+        res: Response
     ) => {
         
     }

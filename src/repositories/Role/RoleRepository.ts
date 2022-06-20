@@ -1,48 +1,40 @@
-import  IWrite  = require('./interfaces/IWrite');
-import  IRead = require('./interfaces/IRead');
+import IWrite = require('./interfaces/IWrite');
+import IRead = require('./interfaces/IRead');
 import mongoose = require("mongoose");
+import { IRole } from '../../interfaces/Role';
 
 export class RoleRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T> {
 
-  private _model: mongoose.Model<mongoose.Document>;
+    private _model: mongoose.Model<mongoose.Document>;
 
-  constructor(schemaModel: mongoose.Model<mongoose.Document>) {
-    this._model = schemaModel;
-}
+    constructor(schemaModel: mongoose.Model<mongoose.Document>) {
+        this._model = schemaModel;
+    }
 
-create(item: T, callback: any): void {
-    this._model.create(item, callback);
-}
+    create = async (item: IRole): Promise<mongoose.Document<IRole>> => {
+        return await this._model.create(item);
+    }
 
-retrieve(callback: (error: any, result: mongoose.Document[]) => void) {
-    this._model.find({}, callback);
-}
+    retrieve = async (): Promise<Array<mongoose.Document<IRole>>> => {
+        return await this._model.find({});
+    }
 
-update(_id: mongoose.Types.ObjectId, item: T, callback: (error: any, result: any) => void) {
-    this._model.update({ _id: _id }, item, callback);
-}
+    update = async (_id: mongoose.Types.ObjectId, item: T) => {
+        return await this._model.update({ _id: _id }, item);
+    }
 
-delete(_id: string, callback: (error: any, result: any) => void) {
-    this.findById(_id, (error, result) => {
-        if(result) 
-         this._model.deleteOne({ _id: _id }, (err) => callback(err, null));
-        else 
-        callback(`Selected Document is N't Available In Collection`,null);
-    });
+    delete = async (_id: string | mongoose.Types.ObjectId) => {
     
+    }
+
+    findById = async (_id: mongoose.Types.ObjectId ) => {
+        return await this._model.findById(_id);
+    }
+
+
+    private toObjectId(_id: mongoose.Types.ObjectId ): mongoose.Schema.Types.ObjectId {
+        // return mongoose.Schema.Types.ObjectId.createFromHexString(_id)
+        throw new Error("");
+    }
 }
-
-findById(_id: string, callback: (error: any, result: T) => void) {
-    this._model.findById(_id, callback);
-}
-
-
-private toObjectId(_id: string):mongoose.Schema.Types.ObjectId {
-    // return mongoose.Schema.Types.ObjectId.createFromHexString(_id)
-    throw new Error("");
-}
-
-}
-
-
 

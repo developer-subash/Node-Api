@@ -1,8 +1,10 @@
-import Role, { IRole } from "../models/role.model";
+import mongoose from "mongoose";
+import { IRole } from "../interfaces/Role";
+import Role from "../models/role.model";
 import { RoleRepository } from "../repositories/Role/RoleRepository";
 
 
-class RoleService {
+export class RoleService {
 
     private _roleRepository;
 
@@ -10,30 +12,19 @@ class RoleService {
         this._roleRepository = new RoleRepository(Role);
     }
 
-    fetchAll(callback: (error: any, result: any) => void) {
-        try {
-            this._roleRepository.retrieve(callback);
-        } catch (error) {
-            throw new Error("error in your request");
-        }
+    fetchAll = async (): Promise<Array<mongoose.Document<IRole>>> => {
+        return await this._roleRepository.retrieve();
     }
 
-    async create(item: IRole, callback: (error: any, result: any) => void) {
-        try {
-            this._roleRepository.create(item, callback);
-        } catch (error) {
-            throw new Error("error in your request");
-        }
+     create = async (item: IRole) => {
+         return await this._roleRepository.create(item);
     }
 
-    async delete(id: string, callback: (error: any, result: any) => void) {
+    async delete(id: string | mongoose.Types.ObjectId) {
         try {
-            this._roleRepository.delete(id,callback);
+            return await this._roleRepository.delete(id);
         } catch (error) {
             throw new Error("error in your request");
         }
     }
 }
-
-const roleServiceInstance = new RoleService();
-export default roleServiceInstance;
