@@ -46,11 +46,12 @@ class RoleController {
             const role: IRole = <IRole>req.body;
             // check validation 
             const validationErrors = SendResponse.checkValidation(RoleValidationSchema, role);
-            if (!!validationErrors) {
+            if (!this._utilityServiceInstance.isEmpty(validationErrors)) {
                 SendResponse.sendValidationError(res, validationErrors);
                 return;
             }
-            await this._roleServiceInstance.create(role);
+            const data = await this._roleServiceInstance.create(role);
+            SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'Role Created successFully');
         } catch (error) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }

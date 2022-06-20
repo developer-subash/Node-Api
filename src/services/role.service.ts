@@ -13,11 +13,19 @@ export class RoleService {
     }
 
     fetchAll = async (): Promise<Array<mongoose.Document<IRole>>> => {
-        return await this._roleRepository.retrieve();
+        try {
+            return await this._roleRepository.retrieve();
+        } catch (error) {
+            throw new Error("error in your request");
+        }
     }
 
-     create = async (item: IRole) => {
-         return await this._roleRepository.create(item);
+     create = async (item: IRole) : Promise<mongoose.Document<IRole>> => {
+        try {
+            return await this._roleRepository.create(item);    
+        } catch (error) {
+            throw new Error("error in your request");
+        }
     }
 
     async delete(id: string | mongoose.Types.ObjectId) {
