@@ -32,7 +32,8 @@ class RoleController {
     ) => {
 
         try {
-          const roleList =  await this._roleServiceInstance.fetchAll();  
+          const data =  await this._roleServiceInstance.fetchAll();  
+          SendResponse.sendSuccessResponse(res, 200, data);
         } catch (error) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }
@@ -64,6 +65,7 @@ class RoleController {
        try {
         const roleId: string = req.params.roleId;
         const role = await this._roleServiceInstance.delete(roleId);
+        SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, role, 'Role Deleted successFully');
        } catch (error) {
          SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
        }

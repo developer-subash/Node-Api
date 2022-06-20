@@ -28,7 +28,7 @@ export class RoleService {
         }
     }
 
-    async delete(id: string | mongoose.Types.ObjectId) {
+    async delete(id: string) : Promise<Boolean> {
         try {
             return await this._roleRepository.delete(id);
         } catch (error) {
