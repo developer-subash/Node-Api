@@ -27,8 +27,8 @@ export class RoleRepository<T extends mongoose.Document> implements IRead<T>, IW
 
     delete = async (_id: string ):  Promise<Boolean> => {
         const singleData = await this.findById(_id);
-        if (this._utilityServiceInstance.isEmpty(singleData)) {
-            await !!this._model.deleteOne({ _id: _id });
+        if (!this._utilityServiceInstance.isEmpty(singleData)) {
+            await this._model.deleteOne({ _id: _id });
             return true;
         }
 

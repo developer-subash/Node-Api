@@ -21,6 +21,8 @@ export class UtilsService {
             return false;
         } else if (typeof (data) === 'undefined') {
             return true;
+        } else if (data == null) {
+            return true;
         } else {
             return false;
         }
