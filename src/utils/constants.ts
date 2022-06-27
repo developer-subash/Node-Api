@@ -35,6 +35,12 @@ export namespace Constants {
         
     }
 
+    export const PermissionNames = {
+        CanView : 'can_view',
+        CanDelete : 'can_delete',
+        CanEdit : 'can_edit',
+    } as const;
+
 }
 
 

@@ -3,12 +3,12 @@ import { RoleSchema } from '../schemas/role.schema';
 
 /**
  * Interface to model the Role Schema for TypeScript.
- * @param title:string
+ * @param name:string
  * @param createdAt:Date
  * @param updatedAt:Date
  */
 export interface IRole extends Document {
-    title: String;
+    name: String;
     createdAt: Date;
     updatedAt: Date;
 }

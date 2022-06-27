@@ -35,4 +35,12 @@ export class RoleService {
             throw new Error("error in your request");
         }
     }
+
+    update = async (id: string, item: IRole) :Promise<mongoose.Document<IRole>> => {
+        try {
+            return await this._roleRepository.update(id,item);    
+        } catch (error) {
+            throw new Error("error in your request");
+        }
+    }
 }

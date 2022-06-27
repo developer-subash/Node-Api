@@ -5,7 +5,6 @@ import ICategoryController from '../controllers/category.controller';
   router.post('/',ICategoryController.createCategory);
   router.get('/',ICategoryController.fetchAll);
   router.delete('/:catId',ICategoryController.deleteCategory);
-  router.get('/',ICategoryController.fetchAll);
 
 
 

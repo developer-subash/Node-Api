@@ -10,6 +10,7 @@ import roleControllerInstance from './../controllers/role.controller';
 //   router.post('/',updateAccountSchema, roleControllerInstance.createRole);
   router.post('/', roleControllerInstance.createRole);
   router.delete('/:roleId', roleControllerInstance.deleteRole);
+  router.patch('/:roleId', roleControllerInstance.updateRole);
 
   
   function updateAccountSchema(req: Request, res: Response, next: NextFunction) {

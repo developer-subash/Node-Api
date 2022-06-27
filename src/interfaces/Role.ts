@@ -1,6 +1,6 @@
 import { User } from './User';
 export interface IRole {
-    title: String;
+    name: String;
     createdBy?: User;
     createdAt?: Date;
     updatedAt?: Date;

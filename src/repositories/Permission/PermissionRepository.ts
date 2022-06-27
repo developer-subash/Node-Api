@@ -1,27 +1,31 @@
 import IWrite = require('./interfaces/IWrite');
 import IRead = require('./interfaces/IRead');
 import mongoose = require("mongoose");
-import { IRole } from '../../interfaces/Role';
+
 import { UtilsService } from '../../services/utils.service';
+import { IPermission } from '../../interfaces/Permission';
 
-export class RoleRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T> {
 
-    private readonly _model: mongoose.Model<mongoose.Document>;
+export class PermissionRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T> {
+
+    private readonly _model:  mongoose.Model<mongoose.Document<IPermission>>;
     private readonly _utilityServiceInstance;
-    constructor(schemaModel: mongoose.Model<mongoose.Document>) {
+    constructor(schemaModel:  mongoose.Model<mongoose.Document<IPermission>>) {
         this._model = schemaModel;
         this._utilityServiceInstance = new UtilsService();
     }
 
-    create = async (item: IRole): Promise<mongoose.Document<IRole>> => {
+    create = async (item: IPermission): Promise<mongoose.Document<IPermission>> => {
         return await this._model.create(item);
     }
 
-    retrieve = async (): Promise<Array<mongoose.Document<IRole>>> => {
-        return await this._model.find({});
+    retrieve = async (): Promise<Array<mongoose.Document<IPermission>>> => {
+        const data = await this._model.find({});
+        console.log("data", this._model);
+        return data;
     }
 
-    update = async(_id: string, item: IRole): Promise<any | mongoose.Model<mongoose.Document<IRole>>> => {
+    update = async(_id: string, item: IPermission): Promise<any | mongoose.Model<mongoose.Document<IPermission>>> => {
         try {
             return await this._model.findOneAndUpdate({ _id: _id }, item, {upsert: true});  
         } catch (error) {
@@ -37,7 +41,7 @@ export class RoleRepository<T extends mongoose.Document> implements IRead<T>, IW
             return true;
         }
 
-        throw new Error("Delete Id Request is not in Role Collections");
+        throw new Error("Delete Id Request is not in Permission Collections");
     }
 
     findById = async (_id: string ) => {

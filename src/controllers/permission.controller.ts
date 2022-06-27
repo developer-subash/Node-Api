@@ -1,18 +1,19 @@
 import { Request, Response } from 'express';
-import { IRole } from './../models/role.model';
-import { SendResponse } from './../utils/sendResponse';
+import { SendResponse } from '../utils/sendResponse';
 import { Constants } from '../utils/constants';
-import {  RoleValidationSchema } from '../schemas/role.schema';
-import { RoleService } from './../services/role.service';
 import { UtilsService } from '../services/utils.service';
-import mongoose from 'mongoose';
-class RoleController {
 
-    private readonly _roleServiceInstance;
+import { PermissionService } from './../services/permission.service';
+import { PermissionValidationSchema } from '../schemas/permission.schema';
+import { IPermission } from '../interfaces/Permission';
+
+class PermissionController {
+
+    private readonly _permissionServiceInstance;
     private readonly _utilityServiceInstance;
 
     constructor() {
-        this._roleServiceInstance =  new RoleService()
+        this._permissionServiceInstance =  new PermissionService()
         this._utilityServiceInstance = new UtilsService();
     }
 
@@ -27,66 +28,65 @@ class RoleController {
         req: Request,
         res: Response
     ) => {
-
         try {
-          const data =  await this._roleServiceInstance.fetchAll();  
+          const data =  await this._permissionServiceInstance.fetchAll();  
           SendResponse.sendSuccessResponse(res, 200, data);
         } catch (error) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }
     }
 
-    createRole = async (
+    createPermission = async (
         req: Request,
         res: Response
     ) => {
         try {
-            const role: IRole = <IRole>req.body;
+            const permission: IPermission = <IPermission>req.body;
             // check validation 
-            const validationErrors = SendResponse.checkValidation(RoleValidationSchema, role);
+            const validationErrors = SendResponse.checkValidation(PermissionValidationSchema, permission);
             if (!this._utilityServiceInstance.isEmpty(validationErrors)) {
                 SendResponse.sendValidationError(res, validationErrors);
                 return;
             }
-            const data = await this._roleServiceInstance.create(role);
-            SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'Role Created successFully');
+            const data = await this._permissionServiceInstance.create(permission);
+            SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'Permission Created successFully');
         } catch (error) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }
     }
 
-    deleteRole = async (
+    deletePermission = async (
         req: Request,
         res: Response
     ) => {
        try {
-        const roleId: string = req.params.roleId;
-        const role = await this._roleServiceInstance.delete(roleId);
-        SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, role, 'Role Deleted successFully');
+        const permissionId: string = req.params.permissionId;
+        const role = await this._permissionServiceInstance.delete(permissionId);
+        SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, role, 'Permission Deleted successFully');
        } catch (error) {
          SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
        }
     }
 
-    updateRole = async (
+    updatePermission = async (
         req: Request,
         res: Response
     ) => {
         try {
-            const roleId: string = req.params.roleId;
-            const role: IRole = <IRole>req.body;
-            const validationErrors = SendResponse.checkValidation(RoleValidationSchema, role);
+            const permissionId: string = req.params.roleId;
+            const permission: IPermission = <IPermission>req.body;
+            const validationErrors = SendResponse.checkValidation(PermissionValidationSchema, permission);
             if (!this._utilityServiceInstance.isEmpty(validationErrors)) {
                 SendResponse.sendValidationError(res, validationErrors);
                 return;
             }
-            const data = await this._roleServiceInstance.update(roleId, role);
-            SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'Role Created successFully');
+            const data = await this._permissionServiceInstance.update(permissionId, permission);
+            SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'Permission Created successFully');
         } catch (error) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }
     }
 }
 
- const roleControllerInstance = new RoleController();
- export default roleControllerInstance;
+ const permissionControllerInstance = new PermissionController();
+ export default permissionControllerInstance;
