@@ -13,19 +13,35 @@ const PermissionSchema = new Schema({
         type: Boolean,
         default: true
     },
+    modelName: String,
+    permissionTxt: String,
 }, { timestamps: true }
 );
 
 const PermissionValidationSchema = Joi.object({
     name: Joi.string()
-        .min(3)
         .required()
         .messages({
             "string.empty": `Name cannot be an empty field`,
             "any.required": `Name is a required.`,
             "string.base": `Name should be a type of text`,
-            "string.min": `Name should be a not less than 3 string`,
-        })  
+        }),
+    modelName: Joi.string()
+        .required()
+        .messages({
+            "string.empty": `Model Name cannot be an empty field`,
+            "any.required": `Model Name is a required.`,
+            "string.base": `Model Name should be a type of text`,
+        }),
+    permissionTxt: Joi.string()
+        .required()
+        .messages({
+            "string.empty": `permissionTxt cannot be an empty field`,
+            "any.required": `permissionTxt is a required.`,
+            "string.base": `permissionTxt should be a type of text`,
+        }),
+            
+
 });
 
 export  {
