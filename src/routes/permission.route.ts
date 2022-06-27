@@ -6,5 +6,6 @@ import {verifyLogin} from '../middlewares/validations/category.validation'
 
   router.get('/',verifyLogin.verifyToken, verifyLogin.checkValidToken, permissionControllerInstance.fetchAll);
   router.post('/',verifyLogin.verifyToken, verifyLogin.checkValidToken, permissionControllerInstance.createPermission);
+  router.delete('/:permissionId',verifyLogin.verifyToken, verifyLogin.checkValidToken, permissionControllerInstance.deletePermission);
   
   module.exports = router ;

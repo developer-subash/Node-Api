@@ -61,8 +61,8 @@ class PermissionController {
     ) => {
        try {
         const permissionId: string = req.params.permissionId;
-        const role = await this._permissionServiceInstance.delete(permissionId);
-        SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, role, 'Permission Deleted successFully');
+        const permission = await this._permissionServiceInstance.delete(permissionId);
+        SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, permission, 'Permission Deleted successFully');
        } catch (error) {
          SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
        }
