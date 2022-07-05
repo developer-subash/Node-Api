@@ -1,4 +1,5 @@
 import Joi from "joi";
+import mongoose from "mongoose";
 import { Schema } from 'mongoose';
 import { Constants } from "../utils/constants";
 
@@ -8,6 +9,10 @@ const PermissionSchema = new Schema({
         enum: [Constants.PermissionNames.CanView, Constants.PermissionNames.CanDelete, Constants.PermissionNames.CanEdit],
         required: true,
         unique: true
+    },
+    roles: {
+        type: Array,
+        default: []
     },
     status: {
         type: Boolean,

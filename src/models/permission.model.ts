@@ -14,6 +14,7 @@ export interface IPermission extends Document {
     status: Boolean;
     modelName: string;
     permissionTxt: String;
+    roles: Array<mongoose.Types.ObjectId>;//<IRole['_id']>;
     createdAt: Date;
     updatedAt: Date;
 }

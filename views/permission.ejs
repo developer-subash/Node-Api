@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Roles & Permission </title>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"
+    crossorigin="anonymous">
+</head>
+
+<body>
+
+  <h1> Manage Role And Permission </h1>
+  <table class="table">
+    <caption>List of Roles & Permission</caption>
+    <thead>
+      <tr>
+        <th scope="col"> Permission / Role </th>
+        <% data.roles.forEach(item=> { %>
+
+          <th scope="col">
+            <%- item.name %>
+          </th>
+          <% }); %>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.permissions.forEach(permission=> { %>
+        <tr>
+          <th scope="row">
+            <%- permission.permissionTxt %>
+          </th>
+          <% data.roles.forEach((role,key)=> { %>
+
+            <td>
+              <% if(permission.roles.includes(role._id) ){ %>
+                <input class="role-permission" onChange="getval(this, '<%- permission._id %>', '<%- role._id %>');" type="checkbox" name="role" checked>
+                <% } else{ %>
+                  <input class="role-permission" onchange="getval(this, '<%- permission._id %>', '<%- role._id %>')" type="checkbox" name="role">
+                  <% } %>
+            </td>
+
+            <% }); %>
+
+        </tr>
+        <% }); %>
+    </tbody>
+  </table>
+
+  <button type="button" class="btn btn-primary">Save</button>
+
+  <script>
+    //  var rolePermission = jQuery(".role-permission");
+    //  rolePermission.on('change', function(event){
+    //   console.log(event);
+    //  });
+    var testObj = [];
+     var data = []; 
+
+    remove_item = function(arr, value) {
+        var b = '';
+        for (b in arr) {
+          if (arr[b] === value) {
+          arr.splice(b, 1);
+          break;
+          }
+        }
+        return arr;
+    };
+
+
+    function getval(elem, permissionId, roleId)  {
+      var permissions =  `<%=(data.permissions); %>`;
+      
+      var checked = $(elem).prop("checked");
+
+      for (i = 0; i < permissions.length; i++) {
+         console.log(permissions[i]);
+      }
+      
+      
+       
+      }
+
+
+  </script>
+
+</body>
+
+</html>

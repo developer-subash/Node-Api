@@ -6,15 +6,18 @@ import { UtilsService } from '../services/utils.service';
 import { PermissionService } from './../services/permission.service';
 import { PermissionValidationSchema } from '../schemas/permission.schema';
 import { IPermission } from '../interfaces/Permission';
+import { RoleService } from '../services/role.service';
 
 class PermissionController {
 
     private readonly _permissionServiceInstance;
+    private readonly _roleServiceInstance;
     private readonly _utilityServiceInstance;
 
     constructor() {
         this._permissionServiceInstance =  new PermissionService()
         this._utilityServiceInstance = new UtilsService();
+        this._roleServiceInstance = new RoleService();
     }
 
     /**
@@ -85,6 +88,15 @@ class PermissionController {
         } catch (error) {
             SendResponse.sendErrorResponse(res, Constants.STATUSLIST.HTTP_INTERNAL_ERROR, Constants.StandardMessage.ServerError);
         }
+    }
+
+    manageRolePermission = async (
+        req: Request,
+        res: Response
+    ) => {
+        const permissions =  await this._permissionServiceInstance.fetchAll();
+        const roles =  await this._roleServiceInstance.fetchAll();
+        res.render('permission',{data:{ permissions, roles}});
     }
 }
 

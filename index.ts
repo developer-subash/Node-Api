@@ -13,9 +13,11 @@ import './config/db';
 import  swaggerUi  from 'swagger-ui-express';
 import transporter from './src/config/email';
 const app = express();
+import path from 'path';
 
 dotenv.config();
-
+app.set('views', path.join(__dirname, 'views'));
+ app.set('view engine', 'ejs');
 
 app.use(express.static('public'))
 app.get('/', (req: any, res: any) => {
