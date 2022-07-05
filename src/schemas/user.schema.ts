@@ -30,6 +30,10 @@ const UserSchema = new Schema({
     lastLoginDate: {
         type: Date,
         default: new Date()
+    },
+    roles: {
+        type: Array,
+        required: true, 
     }
 }, { timestamps: true }
 );
@@ -69,7 +73,14 @@ const UserValidationSchema = Joi.object({
         'any.required': `Geneder is required`,
         'string.empty': `Geneder cannot be empty`,
         'any.only': `Gender must be one of [MALE, FEMALE, OTHER]`
-    })
+    }),
+
+    roles: Joi.array().items(
+        Joi.required().messages({
+           "any.required": `Roles Must be assigned to user.`,
+           "string.empty": `Roles cann't be an empty field`
+        })
+     )
 
 });
 

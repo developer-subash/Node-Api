@@ -19,8 +19,8 @@ export class PermissionRepository<T extends mongoose.Document> implements IRead<
         return await this._model.create(item);
     }
 
-    retrieve = async (): Promise<Array<mongoose.Document<IPermission>>> => {
-        const data = await this._model.find({});
+    retrieve = async (modelName: string = '', name: string = ''): Promise<Array<mongoose.Document<IPermission>>> => {
+        const data = !!modelName ? await this._model.find({ modelName, name }) : await this._model.find({});
         return data;
     }
 

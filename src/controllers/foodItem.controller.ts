@@ -31,6 +31,15 @@ class FoodItemController {
         res: Response,
     ) => {
         try {
+
+            // check current user had permission to access this url 
+            const token: string = req.headers.authorization! && req.headers.authorization.split(' ')[1]!;
+            const hasPermission = await this._utililsServiceInstance.fetchRoles(Constants.ModelNames.FoodItem, Constants.PermissionNames.CanView, token)
+            if (!hasPermission) {
+                SendResponse.sendPermissionDeniedError(res);
+                return;
+            }
+       
             const page: number = Number(req.query.page) || 1;
             const limit: number = Number(req.query.limit) || 10;
             const sortKey: string = req.query.sortKey ? String(req.query.sortKey) : '_id';

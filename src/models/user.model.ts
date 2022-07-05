@@ -12,6 +12,7 @@ import { UserSchema } from '../schemas/user.schema';
  * @param gender:string
  * @param Role: string
  * @param  lastLoginDate: Date,
+ * @param  roles: IRole["_id"],
  */
  export interface IUser extends Document {
     firstName: string;
@@ -23,7 +24,7 @@ import { UserSchema } from '../schemas/user.schema';
     lastLoginDate: Date,
     accessToken?:string;
     refreshToken?:string;
-    // role: IRole["_id"];
+    roles: Array<mongoose.Types.ObjectId>;//IRole["_id"];
   }
 
 // const User: Model<IUser> = model("User", userSchema);

@@ -14,9 +14,9 @@ export class PermissionService {
         this._permissionRepository = new PermissionRepository(Permission);
     }
 
-    fetchAll = async (): Promise<Array<mongoose.Document<IRole>>> => {
+    fetchAll = async (modelName: string = '', permissionName: string = ''): Promise<Array<mongoose.Document<IPermission>>> => {
         try {
-            return await this._permissionRepository.retrieve();
+            return await this._permissionRepository.retrieve(modelName, permissionName);
         } catch (error) {
             throw new Error("error in your request");
         }

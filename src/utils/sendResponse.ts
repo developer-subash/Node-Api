@@ -46,4 +46,9 @@ export namespace SendResponse {
             data,
             message
         });
+
+    export const sendPermissionDeniedError = ( res: Response,data:any = [],message='UnAuthorized to access api', code: number = 401): Response =>  res.status(code).send({
+            status: 'Denied',
+            message
+        });
 }

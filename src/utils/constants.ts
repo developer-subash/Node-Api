@@ -41,6 +41,14 @@ export namespace Constants {
         CanEdit : 'can_edit',
     } as const;
 
+    export const ModelNames = {
+        User: 'user',
+        FoodItem: 'food_item',
+        Permission: 'Permission',
+        Role: 'Role',
+        FoodItemCategory: 'Category'
+    } as const;
+
 }
 
 

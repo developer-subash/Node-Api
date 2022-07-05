@@ -1,4 +1,14 @@
 import  brcypt from "bcrypt";
+import mongoose from "mongoose";
+import Jwt from 'jsonwebtoken';
+import { PermissionRepository } from "../repositories/Permission/PermissionRepository";
+import Permission from "../models/permission.model";
+import { IUser } from "../models/user.model";
+import { PermissionService } from "./permission.service";
+import { IPermission } from "../interfaces/Permission";
+import { SendResponse } from "../utils/sendResponse";
+import { NextFunction } from "express";
+
 export class UtilsService {
     
     /**
@@ -6,6 +16,9 @@ export class UtilsService {
      * @param data Data may be any type string | object | array
      * @returns Boolean
      */
+
+    
+
     public isEmpty = (data: any | Array<string> | Object | String): Boolean => {
         if (data instanceof Object) {
             if (JSON.stringify(data) === '{}' || JSON.stringify(data) === '[]') {
@@ -47,7 +60,23 @@ export class UtilsService {
         return Math.floor(Math.pow(10, length-1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length-1) - 1));
     }
 
+    /**
+     *  
+     * @param token 
+     * @returns Array<mongoose.Types.objectId>
+     */
+    public fetchRoles =  async ( modelName: string,permissionName: string ,token: string) :  Promise<boolean> => {
+        const {user: { roles }}: IUser | any =  Jwt.decode(token)!;
+        const pService = new PermissionService();
+        const permissionData: Array<mongoose.Document<IPermission>> | any = await pService.fetchAll(modelName, permissionName);
+        if(permissionData.length)
+            return roles.some(Set.prototype.has, new Set(permissionData[0].roles));
+        else 
+           return false;  
+    }
 
+    // checkRolePermission = (modelName: string, ) => {
 
+    // }
 
 }
