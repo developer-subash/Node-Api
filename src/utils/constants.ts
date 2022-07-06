@@ -39,6 +39,7 @@ export namespace Constants {
         CanView : 'can_view',
         CanDelete : 'can_delete',
         CanEdit : 'can_edit',
+        CanCreate : 'can_create',
     } as const;
 
     export const ModelNames = {

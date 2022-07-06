@@ -28,6 +28,15 @@ class CategoryController {
         res: Response,
         next: NextFunction
     ) => {
+
+        /** Check user role and Permission before start */
+        const token: string = req.headers.authorization! && req.headers.authorization.split(' ')[1]!;
+        const hasPermission = await this._utililsServiceInstance.fetchRoles(Constants.ModelNames.FoodItemCategory, Constants.PermissionNames.CanView, token);
+        if (!hasPermission) {
+            SendResponse.sendPermissionDeniedError(res);
+            return;
+        }
+
         const data = await this._categoryServiceInstance.fetchAll(); 
         SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_CREATED, data, 'Category Fetched successFully');
     }
@@ -38,6 +47,15 @@ class CategoryController {
         next: NextFunction
     ) => {
         try {
+
+            /** Check user role and Permission before start */
+            const token: string = req.headers.authorization! && req.headers.authorization.split(' ')[1]!;
+            const hasPermission = await this._utililsServiceInstance.fetchRoles(Constants.ModelNames.FoodItemCategory, Constants.PermissionNames.CanCreate, token);
+            if (!hasPermission) {
+                SendResponse.sendPermissionDeniedError(res);
+                return;
+            }
+
             // First need to check validations Error and if error found throw msg
             const categoryItem: ICategory = req.body;
             const validationErrors = SendResponse.checkValidation(CategoryValidationSchema, categoryItem);
@@ -55,21 +73,36 @@ class CategoryController {
         }
     }
 
-    deleteCategory = (
+    deleteCategory = async (
         req: Request,
         res: Response
     ) => {
+
+        /** Check user role and Permission before start */
+        const token: string = req.headers.authorization! && req.headers.authorization.split(' ')[1]!;
+        const hasPermission = await this._utililsServiceInstance.fetchRoles(Constants.ModelNames.FoodItemCategory, Constants.PermissionNames.CanDelete, token);
+        if (!hasPermission) {
+            SendResponse.sendPermissionDeniedError(res);
+            return;
+        }
+
         const categoryId: string = req.params.catId;
         const data = this._categoryServiceInstance.delete(categoryId);
         SendResponse.sendSuccessResponse(res, Constants.STATUSLIST.HTTP_SUCCESS, data, 'Category Deleted successFully');
     }
 
-    updateCategory = (
+    updateCategory = async (
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
-
+         /** Check user role and Permission before start */
+         const token: string = req.headers.authorization! && req.headers.authorization.split(' ')[1]!;
+         const hasPermission = await this._utililsServiceInstance.fetchRoles(Constants.ModelNames.FoodItemCategory, Constants.PermissionNames.CanEdit, token);
+         if (!hasPermission) {
+             SendResponse.sendPermissionDeniedError(res);
+             return;
+         }
     }
 }
 
