@@ -1,0 +1,11 @@
+version: "3"
+services:
+  mynode: 
+    build: .
+    ports: 
+      - "8000:3000"
+    depends_on:
+     - mymongo
+
+  mymongo: 
+    image: mongo:latest   
