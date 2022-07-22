@@ -1,6 +1,7 @@
 version: "3"
 services:
   mynode: 
+    container_name: mynode
     build: .
     ports: 
       - "8000:3000"
@@ -8,4 +9,7 @@ services:
      - mymongo
 
   mymongo: 
-    image: mongo:latest   
+    container_name: mymongo
+    image: mongo:latest  
+    volumes:
+    - /mongodb/database:/data/db 
