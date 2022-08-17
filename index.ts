@@ -8,11 +8,17 @@ const FoodItemRouter =  require ('./src/routes/foodItem.route');
 const categoryRouter =  require ('./src/routes/category.route');
 const permisisonRouter =  require ('./src/routes/permission.route');
 const swaggerDocument = require('./src/utils/swagger.json');
+const app = express();
+const cors = require('cors');
+
+app.use(cors({
+  origin: '*'
+}));
+
 import './config/db';
 // import {swaggerDocs}  from './src/utils/swagger';
 import  swaggerUi  from 'swagger-ui-express';
 import transporter from './src/config/email';
-const app = express();
 import path from 'path';
 
 dotenv.config();
@@ -24,9 +30,9 @@ app.get('/', (req: any, res: any) => {
     res.send('Welcome to Nodejs Page');
 })
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 app.listen(port,async () => {
-    console.log('The application is listening on port 3000!');
+    console.log('The application is listening on port'+ port);
     // swaggerDocs(app, 3000);
 })
 

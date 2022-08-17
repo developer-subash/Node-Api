@@ -18,7 +18,19 @@ export class RoleRepository<T extends mongoose.Document> implements IRead<T>, IW
     }
 
     retrieve = async (): Promise<Array<mongoose.Document<IRole>>> => {
-        return await this._model.find({});
+        
+        return await this._model.aggregate(
+            [
+                {
+                    $project:
+                    {
+                        name: 1,
+                        _id: 1
+                    }
+                }
+            ]
+        );
+        // return await this._model.find({});
     }
 
     update = async(_id: string, item: IRole): Promise<any | mongoose.Model<mongoose.Document<IRole>>> => {

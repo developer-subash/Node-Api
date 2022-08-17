@@ -41,7 +41,7 @@ export namespace SendResponse {
         return validationErrors;
     }
 
-    export const sendValidationError = ( res: Response,data:any,message='Please fill all field', code: number = 404): Response =>  res.status(code).send({
+    export const sendValidationError = ( res: Response,data:any,message='Please fill all field', code: number = 422): Response =>  res.status(code).send({
             status: 'Error',
             data,
             message
